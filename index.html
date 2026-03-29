@@ -1,0 +1,108 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Active Motion Arcade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- TensorFlow.js y MoveNet / Pose Detection -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@3.4.0/dist/pose-detection.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675469404/camera_utils.js"></script>
+</head>
+<body>
+  <div id="app">
+    <video id="video" playsinline autoplay muted></video>
+    <canvas id="overlay"></canvas>
+    <div class="gradient-bg"></div>
+
+    <!-- Partículas / fondo dinámico -->
+    <div id="particles"></div>
+
+    <!-- Pantalla de inicio -->
+    <div id="start-screen" class="screen active">
+      <div class="logo">Active Motion Arcade</div>
+      <p class="subtitle">Juegos de movimiento para mejorar tu movilidad y coordinación.</p>
+      <button id="start-btn" class="btn primary">Comenzar</button>
+      <p class="hint">Asegúrate de tener buena iluminación y suficiente espacio alrededor.</p>
+    </div>
+
+    <!-- Pantalla de permisos / cámara -->
+    <div id="camera-screen" class="screen">
+      <h2>Permiso de cámara</h2>
+      <p>Necesitamos acceder a tu cámara para detectar tus movimientos.</p>
+      <button id="camera-btn" class="btn primary">Permitir cámara</button>
+      <p id="camera-error" class="error"></p>
+    </div>
+
+    <!-- Pantalla de calibración -->
+    <div id="calibration-screen" class="screen">
+      <h2>Calibración</h2>
+      <p>Colócate de pie, centrado en la cámara, con los brazos relajados a los lados.</p>
+      <p>Mantente quieto mientras calibramos tu posición inicial.</p>
+      <button id="calibrate-btn" class="btn primary">Iniciar calibración</button>
+      <p id="calibration-status" class="status"></p>
+    </div>
+
+    <!-- Menú de juegos -->
+    <div id="menu-screen" class="screen">
+      <h2>Elige un juego</h2>
+      <div class="game-list">
+        <button class="game-card" data-game="targets">
+          <h3>Golpea los objetivos</h3>
+          <p>Mueve tus brazos para golpear objetos flotantes.</p>
+        </button>
+        <button class="game-card" data-game="path">
+          <h3>Sigue el camino</h3>
+          <p>Traza rutas en el aire siguiendo las guías.</p>
+        </button>
+        <button class="game-card" data-game="reaction">
+          <h3>Juego de reacción</h3>
+          <p>Responde rápido a las señales visuales.</p>
+        </button>
+      </div>
+      <button id="recalibrate-btn" class="btn secondary small">Recalibrar</button>
+    </div>
+
+    <!-- HUD del juego -->
+    <div id="game-hud" class="hud hidden">
+      <div class="hud-top">
+        <div class="hud-item">
+          <span class="label">Puntuación</span>
+          <span id="score" class="value">0</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">Tiempo</span>
+          <span id="timer" class="value">30</span>
+        </div>
+        <div class="hud-item">
+          <span class="label">Juego</span>
+          <span id="game-name" class="value">-</span>
+        </div>
+      </div>
+      <div class="hud-bottom">
+        <button id="back-menu-btn" class="btn secondary small">Salir</button>
+        <button id="mute-btn" class="btn secondary small">Sonido: ON</button>
+      </div>
+    </div>
+
+    <!-- Mensajes de feedback -->
+    <div id="feedback" class="feedback"></div>
+
+    <!-- Instrucciones accesibles -->
+    <div id="instructions" class="instructions" aria-live="polite">
+      Usa tus brazos para interactuar con los elementos en pantalla. Mantén una distancia de 1.5–2 metros de la cámara.
+    </div>
+
+    <!-- Sonidos -->
+    <audio id="sfx-hit" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" preload="auto"></audio>
+    <audio id="sfx-good" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+    <audio id="sfx-countdown" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+    <audio id="sfx-end" src="https://actions.google.com/sounds/v1/cartoon/clang.ogg" preload="auto"></audio>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
